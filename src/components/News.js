@@ -3,12 +3,13 @@ import NewsItem from './NewsItem'
 import Spinner from './Spinner';
 import PropTypes from 'prop-types';
 import InfiniteScroll from 'react-infinite-scroll-component';
+import Footer from './Footer';
 
 const News = (props) => {
 
 const [articles, setArticles] = useState([])
 const [loading, setLoading] = useState(true)
-const [page,setPage] = useState(1)
+const [page,setPage] = useState(0)
 const [totalResults,setTotalResults] = useState(0)
 
 
@@ -19,11 +20,12 @@ const capitalizeFirstLetter = (string) => {
 
 
 
-  const updateNews = async () => {
+  const updateNews = async () => 
+  {
 
     props.setProgress(0);
 
-    const url = `https://newsapi.org/v2/top-headlines?country=${props.country}&category=${props.category}&apiKey=${props.apiKey}&page=${page}&pageSize=${props.pageSize}`;
+    const url = `https://newsapi.org/v2/top-headlines?country=${props.country}&category=${props.category}&apiKey=${props.apiKey}&page=${page+1}&pageSize=${props.pageSize}`;
     let data = await fetch(url);
 
     props.setProgress(40);
@@ -49,7 +51,7 @@ const capitalizeFirstLetter = (string) => {
 
   useEffect(()=>{
 
-    document.title = `${capitalizeFirstLetter(props.category)}|Taaza Khabar `
+    document.title = `${capitalizeFirstLetter(props.category)} | Taaza Khabar `
     updateNews();
     // eslint-disable-next-line
 
@@ -70,8 +72,8 @@ const capitalizeFirstLetter = (string) => {
 
     setArticles(articles.concat(parsedData.articles))
     setTotalResults(parsedData.totalResults)
-
-
+     setLoading(false)
+    
 
   }
 
@@ -83,19 +85,24 @@ const capitalizeFirstLetter = (string) => {
 
         {/* HeadLine */}
 
-        <h2 style={{ margin: "100px 0px" }} className='text-center'>Taaza Khabar - Top HEADLINES | {capitalizeFirstLetter(props.category)}</h2>
+        <h2 style={{ margin: "100px 0px 30px 0px" }} className='text-center'>Taaza Khabar - Top HEADLINES | {capitalizeFirstLetter(props.category)}
+        
+         </h2>
 
 
+         
 
 
-        {loading && <Spinner />}
+        
         <InfiniteScroll
           dataLength={articles.length}
           next={fetchMoreData}
-          hasMore={articles.length !== totalResults}
+          hasMore={articles.length < totalResults}
           loader={<Spinner />}
+          endMessage={<div className='container-fluid'><Footer/></div>}
+          
         >
-          <div className="container my-4">
+          <div className="container-fluid my-4">
 
             <div className="row my-4">
               {
@@ -127,9 +134,9 @@ export default News
 
 
 News.defaultProps = {
-  name:'in',
+ 
   country: 'in',
-  pageSize: 9,
+  pageSize: 5,
   category: "general",
 
 }
