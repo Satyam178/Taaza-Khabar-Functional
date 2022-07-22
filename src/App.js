@@ -1,23 +1,25 @@
 import './App.css';
 
-import React,{useState,useEffect} from 'react'
+import React,{useState,useEffect} from 'react';
 import Navbar from './components/Navbar';
 import News from './components/News';
 import {BrowserRouter as Router,Routes,Route,} from "react-router-dom";
-import LoadingBar from 'react-top-loading-bar'
+import LoadingBar from 'react-top-loading-bar';
 import Footer from './components/Footer';
+import countries from './components/Countries';
 
 const App = (props) => {
 
 const apiKey = process.env.REACT_APP_NEWS_API
 
 const [progress, setProgress] = useState(0)
-
+ const {setCountryHandler,country} = props
+ 
 useEffect(()=>{
   window.scrollTo({top:0,left:0,behaviour:'smooth'});
-},[])
-  
+},[country])
 
+ 
     return (
       <div >
           
@@ -31,18 +33,21 @@ useEffect(()=>{
      {/* 👇️ scroll to top on button click */}
      <button
        onClick={() => {
+
          window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
        }}
        style={{
          position: 'fixed',
-         padding: '1rem 2rem',
-         fontSize: '20px',
+         padding: '0.5rem',
+         fontSize: '14px',
          bottom: '40px',
          right: '40px',
          backgroundColor: '#0C9',
          color: '#fff',
          textAlign: 'center',
-         zIndex: '1'
+         zIndex: '1',
+         borderRadius:'4px',
+         border:'0.5px solid black'
        }}
      >
        Scroll to top
@@ -60,7 +65,7 @@ useEffect(()=>{
         progress={progress}
       
       />
-        <Navbar/>
+        <Navbar setCountryHandler={setCountryHandler}  />
       
           <Routes>
              <Route exact path="/" element={<News setProgress={setProgress} apiKey = {apiKey} key="general" pageSize={5} country="in" category="general"/>} />
